@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="21" height="19" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" source="../../PyGame_ppv/maps/tmw_desert_spacing.tsx"/>
+ <layer id="1" name="Слой тайлов 1" width="21" height="19">
+  <data encoding="base64" compression="zlib">
+   eJy9k0EOgCAMBPsNJTEx4kFR//8821ujtKWAHjbZA2y6U4gAsHfUilpQU0fNLHNAjQ0KmUzysUPfZ2YtBymnhoPUV/IWh5K+Xg7enA2VGIeQ8dpdazbvPJeyowDvmbnX9vsXT/IH6O/orNhRyf+xOHz1j6S+/C15OGh9k+NMS1+Ng7Vfr4jDDd3nMy4=
+  </data>
+ </layer>
+</map>

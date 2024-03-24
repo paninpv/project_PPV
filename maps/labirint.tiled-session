@@ -1,0 +1,74 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "C:/Users/panip/PycharmProjects/Project_PPV/maps/map2.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "C:/Users/panip/PycharmProjects/Project_PPV/maps/map1..tmx": {
+            "scale": 0.85625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 334.01459854014604,
+                "y": 479.4160583941606
+            }
+        },
+        "C:/Users/panip/PycharmProjects/Project_PPV/maps/map1.tmx": {
+            "scale": 1.33125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 358.30985915492954,
+                "y": 189.67136150234742
+            }
+        },
+        "C:/Users/panip/PycharmProjects/Project_PPV/maps/map2.tmx": {
+            "scale": 1.33125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 353.80281690140845,
+                "y": 279.81220657277
+            }
+        },
+        "C:/Users/panip/PycharmProjects/Project_PPV/maps/tmw_desert_spacing.tsx": {
+            "scaleInDock": 1
+        },
+        "map1.tmx": {
+            "scale": 1.33125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 335.39906103286387,
+                "y": 303.0985915492958
+            }
+        },
+        "tmw_desert_spacing.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/panip/PycharmProjects/Project_PPV/maps",
+    "last.imagePath": "C:/Users/panip/PycharmProjects/PyGame_ppv/maps",
+    "map.height": 19,
+    "map.lastUsedExportFilter": "Все файлы (*)",
+    "map.lastUsedFormat": "tmx",
+    "map.layerDataFormat": null,
+    "map.width": 21,
+    "openFiles": [
+        "map1.tmx",
+        "tmw_desert_spacing.tsx",
+        "C:/Users/panip/PycharmProjects/Project_PPV/maps/map2.tmx"
+    ],
+    "project": "labirint.tiled-project",
+    "recentFiles": [
+        "map1.tmx",
+        "tmw_desert_spacing.tsx",
+        "C:/Users/panip/PycharmProjects/Project_PPV/maps/map2.tmx",
+        "C:/Users/panip/PycharmProjects/Project_PPV/maps/map1..tmx",
+        "C:/Users/panip/PycharmProjects/Project_PPV/maps/map1.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.margin": 1,
+    "tileset.spacing": 1
+}
