@@ -4,14 +4,14 @@ import pygame_gui
 import pygame
 import pytmx
 
-pygame.mixer.pre_init(44100, -16, 1, 512) # важно вызвать до pygame.init()
+pygame.mixer.pre_init(44100, -16, 1, 512)  # важно вызвать до pygame.init()
 pygame.init()
 
 money = pygame.mixer.Sound("music1/dengi-na-igrovoy-schet.ogg")
 step_hero = pygame.mixer.Sound("music1/odinochnyiy-schelchok.ogg")
 victory = pygame.mixer.Sound("music1/zvuk-pobedyi.ogg")
 step_enemy = pygame.mixer.Sound("music1/zvuk-shaga.ogg")
-game_ov = pygame.mixer.Sound("music1/konets-igri.ogg")
+game_ov = pygame.mixer.Sound("music1/konets-igri.wav")
 # Кортеж размеров окна
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 672, 608
 
@@ -35,22 +35,29 @@ def start_screen():
     manager = pygame_gui.UIManager((672, 608))  # Менеджер обрабатывает элементы пользовательского интерфейса
     # Ставим кнопку в середину экрана, она будет менять цвет экрана с белого на черный.
     switch = pygame_gui.elements.UIButton(
-        relative_rect=pygame.Rect((100, 300), (100, 50)),
+        relative_rect=pygame.Rect((100, 420), (100, 50)),
         text='Старт', manager=manager
+    )
+
+    switch1 = pygame_gui.elements.UIButton(
+        relative_rect=pygame.Rect((300, 420), (100, 50)),
+        text='Выход', manager=manager
     )
     color = 'white'  # Переменная отвечает за цвет
 
-    intro_text = ["Игра 'Догони'",
-                  "Правила игры:",
-                  "Если в правилах несколько строк,",
-                  "приходится выводить их построчно"]
+    intro_text = ["                            Игра 'Догони'",
+                  "                                          ",
+                  "                                          ",
+                  "                            Правила игры:",
+                  "          Если в правилах несколько строк,",
+                  "          приходится выводить их построчно"]
     fon = pygame.image.load('images/fon.jpg')
 
     screen.blit(fon, (0, 0))
-    font = pygame.font.Font(None, 30)
-    text_coord = 50
+    font = pygame.font.Font(None, 40)
+    text_coord = 70
     for line in intro_text:
-        string_rendered = font.render(line, 1, pygame.Color('brown'))
+        string_rendered = font.render(line, 1, pygame.Color((128, 0, 0)))
         intro_rect = string_rendered.get_rect()
         text_coord += 10
         intro_rect.top = text_coord
@@ -67,6 +74,8 @@ def start_screen():
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == switch:
                     return
+                if event.ui_element == switch1:
+                    terminate()
             # elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
             # return  # начинаем игру
             manager.process_events(event)  # настраиваем менеджер
@@ -156,7 +165,7 @@ class Hero:  # Класс героя исполнителя
 
     def __init__(self, position):
         self.x, self.y = position
-        #self.image = pygame.image.load(f"images/{pic}")
+        # self.image = pygame.image.load(f"images/{pic}")
         self.n = 0
         self.k = 0
 
@@ -167,10 +176,8 @@ class Hero:  # Класс героя исполнителя
         self.x, self.y = position
 
     def sprite_pic(self, k, n):
-
         self.k = k
         self.n = n
-
 
     def out_sprite_pic(self):
         return self.n
@@ -185,7 +192,7 @@ class Star:  # Класс звезды
 
     def __init__(self, position):
         self.x, self.y = position
-        self.image = pygame.image.load(f"images/star.png")
+        # self.image = pygame.image.load(f"images/star.png")
         self.k = 0
 
     def get_position(self):
@@ -206,11 +213,11 @@ class Star:  # Класс звезды
 
 class Enemy:  # Класс противника
 
-    def __init__(self, pic, position):
+    def __init__(self, position):
         self.x, self.y = position
         self.delay = 400  # Задержка между срабатываниями таймера
         pygame.time.set_timer(ENEMY_EVENT_TYPE, self.delay)  # Установим таймер с задержкой времени
-        self.image = pygame.image.load(f"images/{pic}")
+        # self.image = pygame.image.load(f"images/enemy.png")
         self.lird = 0
         self.spr_num = 0
 
@@ -233,7 +240,6 @@ class Enemy:  # Класс противника
         if self.spr_num == 4:
             self.spr_num = 0
         self.x, self.y = position
-
 
     # Метод рисования кружка - противника в игре
     def render(self, screen):
@@ -289,7 +295,6 @@ class Game:
                 sprite_num = 0
             self.hero.sprite_pic(k_look, sprite_num)
 
-
     # Метод перемещения противника
     def move_enemy(self):  # Считает новые координаты и изменяет координаты противника
         next_position = self.labyrinth.find_path_step(self.enemy.get_position(), self.hero.get_position())
@@ -309,6 +314,7 @@ class Game:
 
 
 # Метод выводит сообщение о том, что мы выиграли
+
 def show_message(screen, message):
     font = pygame.font.Font(None, 50)
     text = font.render(message, 1, (50, 70, 0))
@@ -321,6 +327,10 @@ def show_message(screen, message):
 
 
 def main():
+    pygame.mixer.music.load("music1/fonovoy-muzyiki.ogg")
+    pygame.mixer.music.play(-1)  # play(loops=0, start=0.0, fade_ms = 0)
+    pygame.mixer.music.set_volume(0.5)
+
     pygame.init()  # Инициализируем pygame
     # Создаем окно для рисования
     pygame.display.set_caption('Догони!')
@@ -332,7 +342,7 @@ def main():
     # Объект класса Героя с координатами в центре карты
     hero = Hero((10, 9))
 
-    enemy = Enemy("enemy.png", (19, 9))
+    enemy = Enemy((19, 9))
 
     star = Star((13, 9))
 
@@ -345,6 +355,7 @@ def main():
     running = True
     game_over = False  # Флаг для окончания игрового момента
     sound_fl = 0
+    timer = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -361,11 +372,12 @@ def main():
         game.render(screen)
         if game.check_win():  # Проверяем если мы выиграли
             game_over = True
-            #victory.play(0)
+
             show_message(screen, "Ура! Вы выиграли!!!")
             if sound_fl == 0:
                 victory.play()
                 sound_fl = 1
+                pygame.mixer.music.stop()
 
         if game.check_lose():  # Проверяем если мы проиграли
             game_over = True
@@ -373,6 +385,13 @@ def main():
             if sound_fl == 0:
                 game_ov.play()
                 sound_fl = 1
+                pygame.mixer.music.stop()
+
+        if sound_fl == 1:
+            timer += 1
+        if timer == 50:
+            timer = 0
+            main()
 
         if game.check_star():  # Проверяем если звезд
             money.play()
@@ -385,6 +404,7 @@ def main():
 
 
 if __name__ == "__main__":
+
     frames = []  # Герой
     sprite = pygame.image.load("images/hero1.png").convert_alpha()
     width, height = sprite.get_size()
@@ -413,4 +433,3 @@ if __name__ == "__main__":
         row += int(h)
 
     main()
-
