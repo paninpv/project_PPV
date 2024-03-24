@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="../../PyGame_ppv/maps/tmw_desert_spacing.tsx"/>
  <layer id="1" name="Слой тайлов 1" width="21" height="19">
   <data encoding="base64" compression="zlib">
-   eJy9k0EOgCAMBPsNJTEx4kFR//8821ujtKWAHjbZA2y6U4gAsHfUilpQU0fNLHNAjQ0KmUzysUPfZ2YtBymnhoPUV/IWh5K+Xg7enA2VGIeQ8dpdazbvPJeyowDvmbnX9vsXT/IH6O/orNhRyf+xOHz1j6S+/C15OGh9k+NMS1+Ng7Vfr4jDDd3nMy4=
+   eJy1k7EOwjAMRAMbYgLBBjhbM1H+/+swkiNZJ1/jSGU4Na7cZ/vi3kop1x11V51VonqZPu7sVU2jdydjRoxmtSRgVMJbgNnsKZCHMavfv2d9VuBJogYy1+RszTExT8p2n6ioN+aRZ2bmY0x/7ky2P95bFqMuA2bkqY+jXXkHfuLcs30ejLkk76Zt5I3uHf1ncVQju0sz6ky2xzNizOjOM5x/zO79xf/I94v+4ywr4f+YD9VxRz1VX7WAKo8=
   </data>
  </layer>
 </map>

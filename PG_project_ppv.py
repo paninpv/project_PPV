@@ -6,7 +6,6 @@ import pytmx
 
 pygame.mixer.pre_init(44100, -16, 1, 512)  # важно вызвать до pygame.init()
 pygame.init()
-
 money = pygame.mixer.Sound("music1/dengi-na-igrovoy-schet.ogg")
 step_hero = pygame.mixer.Sound("music1/odinochnyiy-schelchok.ogg")
 victory = pygame.mixer.Sound("music1/zvuk-pobedyi.ogg")
@@ -14,6 +13,8 @@ step_enemy = pygame.mixer.Sound("music1/zvuk-shaga.ogg")
 game_ov = pygame.mixer.Sound("music1/konets-igri.wav")
 # Кортеж размеров окна
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 672, 608
+
+num_map = None
 
 FPS = 15  # Частота. Количество кадров в секунду.
 
@@ -32,17 +33,30 @@ def terminate():
 
 
 def start_screen():
+    global num_map
     manager = pygame_gui.UIManager((672, 608))  # Менеджер обрабатывает элементы пользовательского интерфейса
     # Ставим кнопку в середину экрана, она будет менять цвет экрана с белого на черный.
-    switch = pygame_gui.elements.UIButton(
-        relative_rect=pygame.Rect((100, 420), (100, 50)),
-        text='Старт', manager=manager
-    )
 
     switch1 = pygame_gui.elements.UIButton(
-        relative_rect=pygame.Rect((300, 420), (100, 50)),
+        relative_rect=pygame.Rect((60, 416), (120, 40)),
+        text='Старт 1 карта', manager=manager
+    )
+
+    switch = pygame_gui.elements.UIButton(
+        relative_rect=pygame.Rect((274, 484), (120, 40)),
         text='Выход', manager=manager
     )
+
+    switch2 = pygame_gui.elements.UIButton(
+        relative_rect=pygame.Rect((274, 416), (120, 40)),
+        text='Старт 2 карта', manager=manager
+    )
+
+    switch3 = pygame_gui.elements.UIButton(
+        relative_rect=pygame.Rect((488, 416), (120, 40)),
+        text='Старт 3 карта', manager=manager
+    )
+
     color = 'white'  # Переменная отвечает за цвет
 
     intro_text = ["                            Игра 'Догони'",
@@ -72,9 +86,16 @@ def start_screen():
                 terminate()
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == switch:
-                    return
                 if event.ui_element == switch1:
+                    num_map = 1
+                    return
+                if event.ui_element == switch2:
+                    num_map = 2
+                    return
+                if event.ui_element == switch3:
+                    num_map = 3
+                    return
+                if event.ui_element == switch:
                     terminate()
             # elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
             # return  # начинаем игру
@@ -92,16 +113,16 @@ class Labyrinth:
     # список тайлов по которым игрок может перемещаться,
     # модификатор тайла до которого нужно дойти.
 
-    def __init__(self, filename, free_tile, finish_tile):
-
-        self.map = pytmx.load_pygame(f"{MAPS_DIR}/{filename}")  # Берем карту из файла
-
-        self.height = self.map.height  # Высота лабиринта
-        self.width = self.map.width  # Ширина лабиринта
-        self.tile_size = self.map.tilewidth
+    def __init__(self, free_tile, finish_tile):
         self.free_tile = free_tile
         self.finish_tile = finish_tile
         self.score = 0
+
+    def all_cards(self, file_map):
+        self.map = pytmx.load_pygame(f"{MAPS_DIR}/{file_map}")  # Берем карту из файла
+        self.height = self.map.height  # Высота лабиринта
+        self.width = self.map.width  # Ширина лабиринта
+        self.tile_size = self.map.tilewidth
 
     # Функция для рисования лабиринта
 
@@ -112,9 +133,9 @@ class Labyrinth:
             for x in range(self.width):
                 image = self.map.get_tile_image(x, y, 0)  # Метод передает координаты и номер слоя
                 screen.blit(image, (x * self.tile_size, y * self.tile_size))
-        font = pygame.font.Font(None, 32)  # Шрифт по умолчанию. Размер 24.
-        text = font.render(f"Всего набрано: {self.score}", 1, (255, 0, 0))  # Текст, параметр сглаживания и цвет.
-        screen.blit(text, (20, 20))
+        font = pygame.font.Font(None, 24)  # Шрифт по умолчанию. Размер 24.
+        text = font.render(f"Всего монет: {self.score}", 1, (128, 0, 0))  # Текст, параметр сглаживания и цвет.
+        screen.blit(text, (24, 22))
 
     def star_move(self):
         self.score += 1
@@ -327,6 +348,8 @@ def show_message(screen, message):
 
 
 def main():
+    global num_map
+
     pygame.mixer.music.load("music1/fonovoy-muzyiki.ogg")
     pygame.mixer.music.play(-1)  # play(loops=0, start=0.0, fade_ms = 0)
     pygame.mixer.music.set_volume(0.5)
@@ -337,8 +360,19 @@ def main():
     screen = pygame.display.set_mode(WINDOW_SIZE)
     start_screen()
 
-    # Создаем объект лабиринт экземпляр нашего класса
-    labyrinth = Labyrinth("map2.tmx", [30, 46], 46)
+    labyrinth = Labyrinth([30, 31, 38, 39, 40, 46, 47, 48], 46)
+
+    if num_map == 1:
+        labyrinth.all_cards("map1.tmx")
+
+    if num_map == 2:
+        labyrinth.all_cards("map2.tmx")
+
+    if num_map == 3:
+        labyrinth.all_cards("map3.tmx")
+
+        # Создаем объект лабиринт экземпляр нашего класса
+
     # Объект класса Героя с координатами в центре карты
     hero = Hero((10, 9))
 
