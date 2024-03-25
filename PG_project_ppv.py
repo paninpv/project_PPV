@@ -15,6 +15,7 @@ game_ov = pygame.mixer.Sound("music1/konets-igri.wav")
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 672, 608
 
 num_map = None
+score = 0
 
 FPS = 15  # Частота. Количество кадров в секунду.
 
@@ -38,22 +39,22 @@ def start_screen():
     # Ставим кнопку в середину экрана, она будет менять цвет экрана с белого на черный.
 
     switch1 = pygame_gui.elements.UIButton(
-        relative_rect=pygame.Rect((60, 416), (120, 40)),
+        relative_rect=pygame.Rect((60, 416), (130, 40)),
         text='Старт 1 карта', manager=manager
     )
 
     switch = pygame_gui.elements.UIButton(
-        relative_rect=pygame.Rect((274, 484), (120, 40)),
+        relative_rect=pygame.Rect((269, 484), (130, 40)),
         text='Выход', manager=manager
     )
 
     switch2 = pygame_gui.elements.UIButton(
-        relative_rect=pygame.Rect((274, 416), (120, 40)),
+        relative_rect=pygame.Rect((269, 416), (130, 40)),
         text='Старт 2 карта', manager=manager
     )
 
     switch3 = pygame_gui.elements.UIButton(
-        relative_rect=pygame.Rect((488, 416), (120, 40)),
+        relative_rect=pygame.Rect((483, 416), (130, 40)),
         text='Старт 3 карта', manager=manager
     )
 
@@ -97,8 +98,7 @@ def start_screen():
                     return
                 if event.ui_element == switch:
                     terminate()
-            # elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-            # return  # начинаем игру
+
             manager.process_events(event)  # настраиваем менеджер
         manager.update(time_delta)  # настраиваем менеджер
         manager.draw_ui(screen)  # настраиваем менеджер
@@ -116,7 +116,7 @@ class Labyrinth:
     def __init__(self, free_tile, finish_tile):
         self.free_tile = free_tile
         self.finish_tile = finish_tile
-        self.score = 0
+        #self.score = 0
 
     def all_cards(self, file_map):
         self.map = pytmx.load_pygame(f"{MAPS_DIR}/{file_map}")  # Берем карту из файла
@@ -134,11 +134,13 @@ class Labyrinth:
                 image = self.map.get_tile_image(x, y, 0)  # Метод передает координаты и номер слоя
                 screen.blit(image, (x * self.tile_size, y * self.tile_size))
         font = pygame.font.Font(None, 24)  # Шрифт по умолчанию. Размер 24.
-        text = font.render(f"Всего монет: {self.score}", 1, (128, 0, 0))  # Текст, параметр сглаживания и цвет.
+        text = font.render(f"Всего монет: {score}", 1, (128, 0, 0))  # Текст, параметр сглаживания и цвет.
         screen.blit(text, (24, 22))
 
     def star_move(self):
-        self.score += 1
+        global score
+        score += 1
+
         while 1:
             pos = (randint(1, 19), randint(1, 17))
             if self.is_free(pos):
@@ -186,7 +188,6 @@ class Hero:  # Класс героя исполнителя
 
     def __init__(self, position):
         self.x, self.y = position
-        # self.image = pygame.image.load(f"images/{pic}")
         self.n = 0
         self.k = 0
 
@@ -213,7 +214,6 @@ class Star:  # Класс звезды
 
     def __init__(self, position):
         self.x, self.y = position
-        # self.image = pygame.image.load(f"images/star.png")
         self.k = 0
 
     def get_position(self):
@@ -242,9 +242,15 @@ class Enemy:  # Класс противника
         self.lird = 0
         self.spr_num = 0
 
-    def get_position(self):
-        #  print('+++', self.x, self.y)
+    def delay_enem(self, scor):
+        self.delay -= scor
+        if self.delay <= 100:
+            self.delay = 100
+        pygame.time.set_timer(ENEMY_EVENT_TYPE, self.delay)  # Установим таймер с задержкой времени
 
+
+
+    def get_position(self):
         return self.x, self.y
 
     def set_position(self, position):
@@ -262,7 +268,7 @@ class Enemy:  # Класс противника
             self.spr_num = 0
         self.x, self.y = position
 
-    # Метод рисования кружка - противника в игре
+    # Метод рисования противника в игре
     def render(self, screen):
 
         delta = (frames2[self.lird + self.spr_num].get_width() - TILE_SIZE) // 2
@@ -295,21 +301,24 @@ class Game:
             k_look = 8
             sprite_num += 1
             step_hero.play()
-        if pygame.key.get_pressed()[pygame.K_RIGHT]:
-            next_x += 1
-            k_look = 12
-            sprite_num += 1
-            step_hero.play()
-        if pygame.key.get_pressed()[pygame.K_UP]:
-            next_y -= 1
-            k_look = 4
-            sprite_num += 1
-            step_hero.play()
-        if pygame.key.get_pressed()[pygame.K_DOWN]:
-            next_y += 1
-            k_look = 0
-            sprite_num += 1
-            step_hero.play()
+        else:
+            if pygame.key.get_pressed()[pygame.K_RIGHT]:
+                next_x += 1
+                k_look = 12
+                sprite_num += 1
+                step_hero.play()
+            else:
+                if pygame.key.get_pressed()[pygame.K_UP]:
+                    next_y -= 1
+                    k_look = 4
+                    sprite_num += 1
+                    step_hero.play()
+                else:
+                    if pygame.key.get_pressed()[pygame.K_DOWN]:
+                        next_y += 1
+                        k_look = 0
+                        sprite_num += 1
+                        step_hero.play()
         if self.labyrinth.is_free((next_x, next_y)):
             self.hero.set_position((next_x, next_y))
             if sprite_num == 4:
@@ -427,7 +436,8 @@ def main():
             timer = 0
             main()
 
-        if game.check_star():  # Проверяем если звезд
+        if game.check_star():  # Проверяем если монета
+            enemy.delay_enem(20)
             money.play()
             star.set_position(labyrinth.star_move())
 
@@ -440,7 +450,7 @@ def main():
 if __name__ == "__main__":
 
     frames = []  # Герой
-    sprite = pygame.image.load("images/hero1.png").convert_alpha()
+    sprite = pygame.image.load("images/hero.png").convert_alpha()
     width, height = sprite.get_size()
     w, h = width / 4, height / 4
     row = 0
@@ -457,7 +467,7 @@ if __name__ == "__main__":
         frames1.append(sprite.subsurface(pygame.Rect(w * i, 0, w, h)))
 
     frames2 = []  # Противник
-    sprite = pygame.image.load("images/enemy1.png").convert_alpha()
+    sprite = pygame.image.load("images/enemy.png").convert_alpha()
     width, height = sprite.get_size()
     w, h = width / 4, height / 4
     row = 0
