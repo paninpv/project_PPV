@@ -13,6 +13,7 @@ step_enemy = pygame.mixer.Sound("music1/zvuk-shaga.ogg")
 game_ov = pygame.mixer.Sound("music1/konets-igri.wav")
 # Кортеж размеров окна
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 672, 608
+DATA_DIR = "data"
 
 num_map = None
 score = 0
@@ -116,7 +117,11 @@ class Labyrinth:
     def __init__(self, free_tile, finish_tile):
         self.free_tile = free_tile
         self.finish_tile = finish_tile
-        #self.score = 0
+        self.record = 0
+        with open(f"{DATA_DIR}/save.dat", "r") as file:
+            self.record = int(file.read())
+        file.close()
+
 
     def all_cards(self, file_map):
         self.map = pytmx.load_pygame(f"{MAPS_DIR}/{file_map}")  # Берем карту из файла
@@ -134,12 +139,19 @@ class Labyrinth:
                 image = self.map.get_tile_image(x, y, 0)  # Метод передает координаты и номер слоя
                 screen.blit(image, (x * self.tile_size, y * self.tile_size))
         font = pygame.font.Font(None, 24)  # Шрифт по умолчанию. Размер 24.
-        text = font.render(f"Всего монет: {score}", 1, (128, 0, 0))  # Текст, параметр сглаживания и цвет.
+        text = font.render(f"Всего монет: {score}        Рекорд:{self.record}", 1, (128, 0, 0))
+
+        # Текст, параметр сглаживания и цвет.
         screen.blit(text, (24, 22))
 
     def star_move(self):
         global score
         score += 1
+        if score > self.record:
+            self.record = score
+            with open(f"{DATA_DIR}/save.dat", "w") as file:
+                file.write(f"{self.record}")
+            file.close()
 
         while 1:
             pos = (randint(1, 19), randint(1, 17))
@@ -247,8 +259,6 @@ class Enemy:  # Класс противника
         if self.delay <= 100:
             self.delay = 100
         pygame.time.set_timer(ENEMY_EVENT_TYPE, self.delay)  # Установим таймер с задержкой времени
-
-
 
     def get_position(self):
         return self.x, self.y
