@@ -36,8 +36,7 @@ def terminate():
 
 def start_screen():
     global num_map
-    manager = pygame_gui.UIManager((672, 608))  # Менеджер обрабатывает элементы пользовательского интерфейса
-    # Ставим кнопку в середину экрана, она будет менять цвет экрана с белого на черный.
+    manager = pygame_gui.UIManager((672, 608))
 
     switch1 = pygame_gui.elements.UIButton(
         relative_rect=pygame.Rect((60, 416), (130, 40)),
@@ -59,18 +58,19 @@ def start_screen():
         text='Старт 3 карта', manager=manager
     )
 
-    color = 'white'  # Переменная отвечает за цвет
-
-    intro_text = ["                            Игра 'Догони'",
+    intro_text = ["                                          Игра 'Догони'",
                   "                                          ",
                   "                                          ",
-                  "                            Правила игры:",
-                  "          Если в правилах несколько строк,",
-                  "          приходится выводить их построчно"]
+                  "                                          ",
+                  "                                          Правила игры:",
+                  "          Собирайте монетки и убегайте от преследователя.",
+                  "          Скорость преследования увеличивается.",
+                  "          Рекорд в игре сохраняется. Игра на трех уровнях.",
+                  "                                           УДАЧИ!!!"]
     fon = pygame.image.load('images/fon.jpg')
 
     screen.blit(fon, (0, 0))
-    font = pygame.font.Font(None, 40)
+    font = pygame.font.Font(None, 30)
     text_coord = 70
     for line in intro_text:
         string_rendered = font.render(line, 1, pygame.Color((128, 0, 0)))
@@ -121,7 +121,6 @@ class Labyrinth:
         with open(f"{DATA_DIR}/save.dat", "r") as file:
             self.record = int(file.read())
         file.close()
-
 
     def all_cards(self, file_map):
         self.map = pytmx.load_pygame(f"{MAPS_DIR}/{file_map}")  # Берем карту из файла
